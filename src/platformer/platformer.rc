@@ -43,11 +43,12 @@ fn main() {
     let (port, chan): (Port<int>, Chan<int>) = std::comm::stream();
     let rendering_port_cell = std::cell::Cell::new(port);
     let rendering_chan_cell = std::cell::Cell::new(chan);
+    let world_state_port_cell = std::cell::Cell::new(world_state_port);
 
     let rendering_timing_port = shared_timing_port.clone();
     do spawn {
         let rendering_timing_port = rendering_timing_port.clone();
-        render::rendering_handler(rendering_timing_port, rendering_chan_cell.take());
+        render::rendering_handler(rendering_timing_port, world_state_port_cell.take(), rendering_chan_cell.take());
     }
 
     do spawn {
