@@ -6,4 +6,4 @@ install:
   - sudo apt-get install rust-nightly
   - sudo apt-get install libsdl2-dev
 script:
-  - make
+  - make build
