@@ -1,5 +1,6 @@
 before_install:
-  - yes | sudo add-apt-repository ppa:hansjorg/rust
+  - yes | sudo add-apt-repository ppa:hansjorg/rust #rust
+  - yes | sudo add-apt-repository ppa:openmw/build  #libsdl2-dev
   - sudo apt-get update
 install:
   - sudo apt-get install rust-nightly
