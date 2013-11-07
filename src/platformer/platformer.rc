@@ -1,7 +1,6 @@
 extern mod sdl2;
 use std::rt::io::Timer;
 
-mod io;
 mod render;
 mod video;
 mod world;
@@ -22,7 +21,7 @@ fn main() {
         player_handler();
     }
 
-    let (timing_port, timing_chan) = std::comm::stream();
+    let (timing_port, timing_chan): (Port<()>, Chan<()>) = std::comm::stream();
     let shared_timing_port = std::comm::SharedPort::new(timing_port);
     let timing_chan_cell = std::cell::Cell::new(timing_chan);
 
@@ -35,21 +34,17 @@ fn main() {
         world::world_handler(world_timing_port, world_state_chan_cell.take())
     }
 
-    let (port, io_chan): (Port<int>, Chan<int>) = std::comm::stream();
+    let (io_port, io_chan): (Port<int>, Chan<int>) = std::comm::stream();
     let io_chan_cell = std::cell::Cell::new(io_chan);
 
-    do spawn {
-        io::io_handler(io_chan_cell.take());
-    }
-
     let (port, chan): (Port<int>, Chan<int>) = std::comm::stream();
-    let port_cell = std::cell::Cell::new(port);
-    let chan_cell = std::cell::Cell::new(chan);
+    let rendering_port_cell = std::cell::Cell::new(port);
+    let rendering_chan_cell = std::cell::Cell::new(chan);
 
     let rendering_timing_port = shared_timing_port.clone();
     do spawn {
         let rendering_timing_port = rendering_timing_port.clone();
-        render::rendering_handler(rendering_timing_port, chan_cell.take());
+        render::rendering_handler(rendering_timing_port, rendering_chan_cell.take());
     }
 
     do spawn {
@@ -58,9 +53,9 @@ fn main() {
         let timing_chan = timing_chan_cell.take();
         loop {
             let tick = periodic.recv();
-            timing_chan.send(0);
+            timing_chan.send(tick);
         }
     }
 
-    video::main(port_cell.take());
+    video::main(io_chan_cell.take(), rendering_port_cell.take());
 }

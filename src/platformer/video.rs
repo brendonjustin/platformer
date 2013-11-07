@@ -1,6 +1,6 @@
 use sdl2;
 
-pub fn main(port: Port<int>) {
+pub fn main(io_chan:Chan<int>, port: Port<int>) {
     sdl2::init([sdl2::InitVideo]);
 
     let window = match sdl2::video::Window::new("rust-sdl2 demo: Video", sdl2::video::PosCentered, sdl2::video::PosCentered, 800, 600, [sdl2::video::OpenGL]) {
@@ -19,7 +19,16 @@ pub fn main(port: Port<int>) {
 
     'main : loop {
         'inner : loop {
-            let val = port.recv();
+            match sdl2::event::poll_event() {
+                sdl2::event::NoEvent => break 'inner,
+                sdl2::event::QuitEvent(_) => break 'main,
+                sdl2::event::KeyDownEvent(_, _, key, _, _) => {
+                    if key == sdl2::keycode::EscapeKey {
+                        io_chan.send(-1)
+                    }
+                },
+                _ => {}
+            }
         }
     }
 

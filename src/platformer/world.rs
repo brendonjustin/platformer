@@ -14,7 +14,7 @@ fn update_world_state(world_state: WorldState) -> WorldState {
     WorldState{ticks: world_state.ticks + 1}
 }
 
-pub fn world_handler(timing_port: SharedPort<int>, out_chan: Chan<int>) {
+pub fn world_handler(timing_port: SharedPort<()>, out_chan: Chan<int>) {
     let mut world_state = WorldState::new();
 
     'world : loop {
