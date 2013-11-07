@@ -1,5 +1,8 @@
 extern mod sdl2;
+extern mod extra;
+
 use std::rt::io::Timer;
+use extra::arc::Arc;
 
 mod render;
 mod video;
@@ -25,7 +28,7 @@ fn main() {
     let shared_timing_port = std::comm::SharedPort::new(timing_port);
     let timing_chan_cell = std::cell::Cell::new(timing_chan);
 
-    let (world_state_port, world_state_chan): (Port<int>, Chan<int>) = std::comm::stream();
+    let (world_state_port, world_state_chan): (Port<Arc<world::WorldState>>, Chan<Arc<world::WorldState>>) = std::comm::stream();
     let world_state_chan_cell = std::cell::Cell::new(world_state_chan);
 
     let world_timing_port = shared_timing_port.clone();
