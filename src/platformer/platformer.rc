@@ -29,10 +29,10 @@ fn main() {
     let (world_state_port, world_state_chan): (Port<int>, Chan<int>) = std::comm::stream();
     let world_state_chan_cell = std::cell::Cell::new(world_state_chan);
 
-    let timing_port = shared_timing_port.clone();
+    let world_timing_port = shared_timing_port.clone();
     do spawn {
-        let timing_port = timing_port.clone();
-        world::world_handler(timing_port, world_state_chan_cell.take())
+        let world_timing_port = world_timing_port.clone();
+        world::world_handler(world_timing_port, world_state_chan_cell.take())
     }
 
     let (port, io_chan): (Port<int>, Chan<int>) = std::comm::stream();
@@ -46,10 +46,10 @@ fn main() {
     let port_cell = std::cell::Cell::new(port);
     let chan_cell = std::cell::Cell::new(chan);
 
-    let timing_port = shared_timing_port.clone();
+    let rendering_timing_port = shared_timing_port.clone();
     do spawn {
-        let timing_port = timing_port.clone();
-        render::rendering_handler(timing_port, chan_cell.take());
+        let rendering_timing_port = rendering_timing_port.clone();
+        render::rendering_handler(rendering_timing_port, chan_cell.take());
     }
 
     do spawn {
