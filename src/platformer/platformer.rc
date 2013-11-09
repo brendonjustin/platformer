@@ -3,15 +3,13 @@ extern mod extra;
 
 use std::rt::io::Timer;
 use extra::arc::Arc;
+use extra::comm::DuplexStream;
 
+mod camera;
 mod render;
 mod video;
 mod world;
 
-
-fn player_handler() {
-
-}
 
 #[start]
 fn start(argc: int, argv: **u8) -> int {
@@ -20,36 +18,21 @@ fn start(argc: int, argv: **u8) -> int {
 
 #[main]
 fn main() {
-    do spawn {
-        player_handler();
-    }
-
     let (timing_port, timing_chan): (Port<()>, Chan<()>) = std::comm::stream();
     let shared_timing_port = std::comm::SharedPort::new(timing_port);
     let timing_chan_cell = std::cell::Cell::new(timing_chan);
 
-    let (world_state_port, world_state_chan): (Port<Arc<world::WorldState>>, Chan<Arc<world::WorldState>>) = std::comm::stream();
-    let world_state_chan_cell = std::cell::Cell::new(world_state_chan);
+    let (world_state_server, world_state_client): (DuplexStream<Arc<world::WorldState>, ()>, DuplexStream<(), Arc<world::WorldState>>) = DuplexStream();
+    let wss_cell = std::cell::Cell::new(world_state_server);
 
     let world_timing_port = shared_timing_port.clone();
     do spawn {
         let world_timing_port = world_timing_port.clone();
-        world::world_handler(world_timing_port, world_state_chan_cell.take())
+        world::world_handler(world_timing_port.clone(), wss_cell.take());
     }
 
     let (io_port, io_chan): (Port<int>, Chan<int>) = std::comm::stream();
     let io_chan_cell = std::cell::Cell::new(io_chan);
-
-    let (port, chan): (Port<int>, Chan<int>) = std::comm::stream();
-    let rendering_port_cell = std::cell::Cell::new(port);
-    let rendering_chan_cell = std::cell::Cell::new(chan);
-    let world_state_port_cell = std::cell::Cell::new(world_state_port);
-
-    let rendering_timing_port = shared_timing_port.clone();
-    do spawn {
-        let rendering_timing_port = rendering_timing_port.clone();
-        render::rendering_handler(rendering_timing_port, world_state_port_cell.take(), rendering_chan_cell.take());
-    }
 
     do spawn {
         let mut timer = Timer::new().unwrap();
@@ -61,5 +44,5 @@ fn main() {
         }
     }
 
-    video::main(io_chan_cell.take(), rendering_port_cell.take());
+    video::main(io_chan_cell.take(), world_state_client);
 }
