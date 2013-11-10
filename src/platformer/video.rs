@@ -6,7 +6,7 @@ use camera;
 use render;
 use world;
 
-pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<(), extra::arc::Arc<world::WorldState>>) {
+pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<(), world::WorldState>) {
     sdl2::init([sdl2::InitVideo]);
 
     let window = match sdl2::video::Window::new("rust-sdl2 demo: Video", sdl2::video::PosCentered, sdl2::video::PosCentered, 800, 600, [sdl2::video::OpenGL]) {
@@ -43,7 +43,7 @@ pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<()
 
         world_state_client.send(());
         let world_state = world_state_client.recv();
-        render::render_world(renderer, camera, world_state.unwrap());
+        render::render_world(renderer, &camera, &world_state);
 
         renderer.present();
     }
