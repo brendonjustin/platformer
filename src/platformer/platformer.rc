@@ -6,6 +6,7 @@ use extra::comm::DuplexStream;
 
 mod camera;
 mod geometry;
+mod player;
 mod render;
 mod video;
 mod world;
@@ -28,7 +29,10 @@ fn main() {
     let world_timing_port = shared_timing_port.clone();
     do spawn {
         let world_timing_port = world_timing_port.clone();
-        world::world_handler(world_timing_port.clone(), wss_cell.take());
+        let player = ~player::Player::new(geometry::Size::new(48.0,48.0));
+        let player_pos = geometry::Point::new(10.0,10.0);
+        let player_state = ~player::PlayerState::new(player, player_pos, ~"./player.bmp");
+        world::world_handler(world_timing_port.clone(), player_state, wss_cell.take());
     }
 
     let (io_port, io_chan): (Port<int>, Chan<int>) = std::comm::stream();
