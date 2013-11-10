@@ -5,6 +5,7 @@ use std::rt::io::Timer;
 use extra::comm::DuplexStream;
 
 mod camera;
+mod geometry;
 mod render;
 mod video;
 mod world;

@@ -3,6 +3,7 @@ use sdl2;
 use extra;
 
 use camera;
+use geometry;
 use render;
 use world;
 
@@ -26,7 +27,7 @@ pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<()
     renderer.clear();
     renderer.present();
 
-    let camera = camera::Camera::new(camera::Point::new(0.0,0.0), camera::Size::new(10.0,10.0));
+    let camera = camera::Camera::new(geometry::Point::new(0.0,0.0), geometry::Size::new(10.0,10.0));
 
     'main : loop {
         'event : loop {
