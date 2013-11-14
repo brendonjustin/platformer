@@ -16,9 +16,14 @@ pub fn render_world(renderer: &sdl2::render::Renderer, camera: &camera::Camera, 
 	renderer.set_draw_color(sdl2::pixels::RGB(r, 0, 0));
 	renderer.clear();
 
-	// render the player. no blit function as of yet, so this is speculative.
-	// world_state.player_state.sprite.blit(None, match renderer.parent {
-	// 	Left(window) => window,
-	// 	Right(surface) => surface
-	// }, None);
+	let player_sprite = &world_state.player_state.sprite;
+
+	let player_tex = match renderer.create_texture_from_surface(*player_sprite) {
+		Ok(texture) => texture,
+		Err(msg) => fail!(msg),
+	};
+
+	let player_rect = player_sprite.get_rect();
+
+	renderer.copy(player_tex, None, Some(player_rect));
 }
