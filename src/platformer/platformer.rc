@@ -1,7 +1,7 @@
 extern mod sdl2;
 extern mod extra;
 
-use std::rt::io::Timer;
+use std::io::Timer;
 use extra::comm::DuplexStream;
 
 mod camera;
