@@ -12,8 +12,10 @@ impl WorldState {
     pub fn new(player_state: ~player::PlayerState) -> WorldState {
         WorldState{ticks: 0, player_state: player_state}
     }
+}
 
-    pub fn clone(&self) -> WorldState {
+impl Clone for WorldState {
+    fn clone(&self) -> WorldState {
         WorldState{ticks: self.ticks, player_state: self.player_state.clone()}
     }
 }
