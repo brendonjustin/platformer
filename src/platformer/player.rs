@@ -32,9 +32,11 @@ impl PlayerState {
 
 		PlayerState{player: player, position: position, sprite: sprite, sprite_path: sprite_path}
 	}
+}
 
-	pub fn clone(&self) -> ~PlayerState {
+impl Clone for PlayerState {
+	fn clone(&self) -> PlayerState {
         let sprite = sdl2::surface::Surface::from_bmp(~Path::new(~"./player.bmp")).unwrap();
-		~PlayerState{player: self.player.clone(), position: self.position, sprite: sprite, sprite_path: self.sprite_path.clone()}
+		PlayerState{player: self.player.clone(), position: self.position, sprite: sprite, sprite_path: self.sprite_path.clone()}
 	}
 }
