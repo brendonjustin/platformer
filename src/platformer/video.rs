@@ -23,7 +23,7 @@ pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<~[
         Err(err) => fail!(format!("failed to create renderer: {}", err))
     };
 
-    renderer.set_draw_color(sdl2::pixels::RGB(255, 0, 0));
+    renderer.set_draw_color(sdl2::pixels::RGB(255, 255, 255));
     renderer.clear();
     renderer.present();
 
