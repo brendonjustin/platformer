@@ -17,9 +17,11 @@ impl Player {
 	pub fn new(size: geometry::Size) -> Player {
 		Player{size: size}
 	}
+}
 
-	pub fn clone(&self) -> ~Player {
-		~Player{size: self.size}
+impl Clone for Player {
+	fn clone(&self) -> Player {
+		Player{size: self.size}
 	}
 }
 
