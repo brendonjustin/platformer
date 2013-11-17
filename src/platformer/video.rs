@@ -7,7 +7,7 @@ use geometry;
 use render;
 use world;
 
-pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<(), world::WorldState>) {
+pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<~[int], world::WorldState>) {
     sdl2::init([sdl2::InitVideo]);
 
     let window = match sdl2::video::Window::new("rust-sdl2 demo: Video", sdl2::video::PosCentered, sdl2::video::PosCentered,
@@ -30,6 +30,8 @@ pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<()
     let camera = camera::Camera::new(geometry::Point::new(0.0,0.0), geometry::Size::new(10.0,10.0));
 
     'main : loop {
+        let mut input = ~[];
+
         'event : loop {
             match sdl2::event::poll_event() {
                 sdl2::event::NoEvent => break 'event,
@@ -37,13 +39,15 @@ pub fn main(io_chan: Chan<int>, world_state_client: extra::comm::DuplexStream<()
                 sdl2::event::KeyDownEvent(_, _, key, _, _) => {
                     if key == sdl2::keycode::EscapeKey {
                         io_chan.send(-1)
+                    } else {
+                        input.push(key as int);
                     }
                 },
                 _ => {}
             }
         }
 
-        world_state_client.send(());
+        world_state_client.send(input);
         let world_state = world_state_client.recv();
         render::render_world(renderer, &camera, &world_state);
 

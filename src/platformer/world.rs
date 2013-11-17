@@ -20,22 +20,34 @@ impl Clone for WorldState {
     }
 }
 
-fn update_world_state(world_state: &WorldState) -> WorldState {
-    WorldState{ticks: world_state.ticks + 1, player_state: world_state.player_state.clone()}
+fn update_world_state(world_state: &WorldState, input: ~[int]) -> WorldState {
+    let mut move_x = 0 as f32;
+    let mut move_y = 0 as f32;
+
+    for val in input.iter() {
+        move_x = match *val {
+            1073741903 => move_x + 1.0,
+            _ => move_x
+        }
+    }
+
+    WorldState{ticks: world_state.ticks + 1, player_state: ~world_state.player_state.move_by(move_x, move_y)}
 }
 
 /**
  Loop, updating the world state every time a value is sent on the timing port.
  Upon updating, the new world state is sent on the state server stream.
  */
-pub fn world_handler(shared_timing_port: std::comm::SharedPort<()>, player_state: ~player::PlayerState, world_state_server: DuplexStream<WorldState, ()>) {
+pub fn world_handler(shared_timing_port: std::comm::SharedPort<()>, player_state: ~player::PlayerState, world_state_server: DuplexStream<WorldState, ~[int]>) {
     let mut world_state = WorldState::new(player_state);
 
     'world : loop {
         shared_timing_port.recv();
 
+        let input = world_state_server.recv();
+
         // update world state
-        let updated_state = update_world_state(&world_state);
+        let updated_state = update_world_state(&world_state, input);
         world_state = updated_state;
         world_state_server.send(world_state.clone());
     }

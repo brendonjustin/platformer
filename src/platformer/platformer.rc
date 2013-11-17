@@ -23,7 +23,7 @@ fn main() {
     let shared_timing_port = std::comm::SharedPort::new(timing_port);
     let timing_chan_cell = std::cell::Cell::new(timing_chan);
 
-    let (world_state_server, world_state_client): (DuplexStream<world::WorldState, ()>, DuplexStream<(), world::WorldState>) = DuplexStream();
+    let (world_state_server, world_state_client): (DuplexStream<world::WorldState, ~[int]>, DuplexStream<~[int], world::WorldState>) = DuplexStream();
     let wss_cell = std::cell::Cell::new(world_state_server);
 
     let world_timing_port = shared_timing_port.clone();
