@@ -8,5 +8,7 @@ install:
   - cd SDL2-2.0.0
   - ./configure && make && sudo make install
   - cd -
+notifications:
+  email: false
 script:
   - make build
