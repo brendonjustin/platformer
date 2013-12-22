@@ -1,11 +1,11 @@
 /// X and Y position values
-struct Point {
+pub struct Point {
 	x: f32,
 	y: f32,
 }
 
 /// Height and width size values
-struct Size {
+pub struct Size {
 	height: f32,
 	width: f32,
 }

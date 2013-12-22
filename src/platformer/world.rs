@@ -3,7 +3,7 @@ use extra::comm::DuplexStream;
 
 use player;
 
-struct WorldState {
+pub struct WorldState {
     player_state: ~player::PlayerState,
     ticks: int,
 }
@@ -38,7 +38,7 @@ fn update_world_state(world_state: &WorldState, input: ~[int]) -> WorldState {
  Loop, updating the world state every time a value is sent on the timing port.
  Upon updating, the new world state is sent on the state server stream.
  */
-pub fn world_handler(shared_timing_port: std::comm::SharedPort<()>, player_state: ~player::PlayerState, world_state_server: DuplexStream<WorldState, ~[int]>) {
+pub fn world_handler(shared_timing_port: std::comm::Port<()>, player_state: ~player::PlayerState, world_state_server: DuplexStream<WorldState, ~[int]>) {
     let mut world_state = WorldState::new(player_state);
 
     'world : loop {

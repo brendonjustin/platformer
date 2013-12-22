@@ -2,7 +2,7 @@ use geometry::Point;
 use geometry::Size;
 
 /// A position and a size representing a view into an area.
-struct Camera {
+pub struct Camera {
 	position: Point,
 	size: Size,
 }

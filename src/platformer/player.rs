@@ -1,10 +1,10 @@
 use geometry;
 
-struct Player {
+pub struct Player {
 	size: geometry::Size,
 }
 
-struct PlayerState {
+pub struct PlayerState {
 	player: ~Player,
 	position: geometry::Point,
 	sprite_path: ~str,
