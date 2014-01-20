@@ -20,7 +20,7 @@ impl Clone for WorldState {
     }
 }
 
-fn update_world_state(world_state: &WorldState, input: ~[int]) -> WorldState {
+fn update_world_state(world_state: &WorldState, input: &[int]) -> WorldState {
     let mut move_x = 0 as f32;
     let mut move_y = 0 as f32;
 
