@@ -28,7 +28,10 @@ fn update_world_state(world_state: &WorldState, input: &[int]) -> WorldState {
         move_x = match *val {
             1073741903 => move_x + 1.0,
             _ => move_x
-        }
+        };
+        move_y = match *val {
+            _ => move_y
+        };
     }
 
     WorldState{ticks: world_state.ticks + 1, player_state: ~world_state.player_state.move_by(move_x, move_y)}
